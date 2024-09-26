@@ -28,14 +28,23 @@ export const TransactionProvider = ({ children }) => {
         
     };
 
-    const getAllTransactions = async () => {
+    const addAllTransactions = async () => {
         try{
 
             if (!ethereum) return alert("Please install metamask");
 
             const transactionContract = getEthereumContract();
-            const availableTransactions = await transactionContract.getAllTransactions();
+            const availableTransactions = await transactionContract.addAllTransactions();
        
+            const structuredTransactions = availableTransactions.map((transaction) => ({
+                addressTo: transaction.receiver,
+                addressFrom: transaction.sender,
+                timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
+                message: transaction.message,
+                keyword: transaction.keyword,
+                amount: parseInt(transaction.amount._hex) / (10 ** 18)
+              }));
+
             console.log(availableTransactions);
         }catch (error) {
             console.log(error);
@@ -54,7 +63,7 @@ export const TransactionProvider = ({ children }) => {
             if (accounts.length) {
                 setCurrentAccount(accounts[0]);
                 
-                getAllTransactions();
+                addAllTransactions();
 
             } else {
                 console.log(error);
@@ -70,7 +79,7 @@ export const TransactionProvider = ({ children }) => {
         try {
             if (!ethereum) throw new Error("No Ethereum object");
             const transactionsContract = getEthereumContract();
-            const transactionCount = await transactionsContract.getTransactionCount();
+            const transactionCount = await transactionsContract.addTransactionCount();
             window.localStorage.setItem("transactionCount", transactionCount);
         } catch (error) {
             console.log("Error in checkIfTransactionsExist:", error);
@@ -113,7 +122,7 @@ export const TransactionProvider = ({ children }) => {
                 }]
             });
 
-            const transactionHash = await transactionContract.addToBlockChain(addressTo, parsedAmount, message, keyword);
+            const transactionHash = await transactionContract.addToBlockchain(addressTo, parsedAmount, message, keyword);
 
             setIsLoading(true);
             console.log(`Loading - ${transactionHash.hash}`);

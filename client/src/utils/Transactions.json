@@ -76,7 +76,7 @@
     },
     {
       "inputs": [],
-      "name": "getAllTransactions",
+      "name": "addAllTransactions", 
       "outputs": [
         {
           "components": [
@@ -121,7 +121,7 @@
     },
     {
       "inputs": [],
-      "name": "getTransactionCount",
+      "name": "addTransactionCount",
       "outputs": [
         {
           "internalType": "uint256",
